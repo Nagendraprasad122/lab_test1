@@ -1,0 +1,268 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 29
+Server version: 9.0.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| student            |
+| student_db         |
+| student_db1        |
+| student_db2        |
+| sys                |
++--------------------+
+8 rows in set (0.03 sec)
+
+mysql> create database Library_Manya;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| library_manya      |
+| mysql              |
+| performance_schema |
+| student            |
+| student_db         |
+| student_db1        |
+| student_db2        |
+| sys                |
++--------------------+
+9 rows in set (0.00 sec)
+
+mysql> use Library_Manya;
+Database changed
+
+mysql> create table publisher(name varchar(10) primary key,pub_address varchar(10),phone int);
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table library_branch(branch_id int primary key,branch_name varchar(10),address varchar(10));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table card(card_no int primary key);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc publisher;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| name        | varchar(10) | NO   | PRI | NULL    |       |
+| pub_address | varchar(10) | YES  |     | NULL    |       |
+| phone       | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+mysql> create table book(book_id int primary key,title varchar(10),pub_name varchar(10) references publisher(name) on delete set null,pub_year varchar(20));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table book_author(book_id int references book(book_id) on delete cascade,author_name varchar(10),primary key(book_id,author_name));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table book_copies(book_id int references book(book_id) on delete cascade,branch_id int references library_branch(branch_id) on delete cascade,no_of_copies int,p
+rimary key(book_id,branch_id));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>  create table book_lending(book_id int references book(book_id) on delete cascade,branch_id int references library_branch(branch_id) on delete cascade,card_no int references card(card_no) on delete cascade,date_out date,due_date date,primary key(book_id,branch_id,card_no));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> desc book_lending;
++-----------+------+------+-----+---------+-------+
+| Field     | Type | Null | Key | Default | Extra |
++-----------+------+------+-----+---------+-------+
+| book_id   | int  | NO   | PRI | NULL    |       |
+| branch_id | int  | NO   | PRI | NULL    |       |
+| card_no   | int  | NO   | PRI | NULL    |       |
+| date_out  | date | YES  |     | NULL    |       |
+| due_date  | date | YES  |     | NULL    |       |
++-----------+------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> insert into publisher(name,pub_address,phone)values('maaaaaaaaaaaaaaaaaaaaaaaaa','mysore',9141416786);
+ERROR 1406 (22001): Data too long for column 'name' at row 1
+mysql> alter table publisher modify column name varchar(40);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into publisher(name,pub_address,phone)values('Jaico Publishing House','Mumbai',3260618);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into publisher(name,pub_address,phone)values('Manya Publishing House','Mysore',3260826);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into publisher(name,pub_address,phone)values('Medha Publishing House','Gokarna',1230826);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into publisher(name,pub_address,phone)values('Harshi Publishing House','Banglore',1236876);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into publisher(name,pub_address,phone)values('Disha Publishing House','Shivmogga',9877526);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from publisher;
++-------------------------+-------------+---------+
+| name                    | pub_address | phone   |
++-------------------------+-------------+---------+
+| Disha Publishing House  | Shivmogga   | 9877526 |
+| Harshi Publishing House | Banglore    | 1236876 |
+| Jaico Publishing House  | Mumbai      | 3260618 |
+| Manya Publishing House  | Mysore      | 3260826 |
+| Medha Publishing House  | Gokarna     | 1230826 |
++-------------------------+-------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> alter table library_branch modify column address varchar(40);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into library_branch(branch_id,branch_name,address)values(1,'Central Library','Cityville'),(2, 'North Branch','Townville'),(3,'East Branch','Villagetown'),(4,'South Branch','Metrocity'),(5,'West Branch','Suburbia');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+mysql> select * from library_branch;
++-----------+-----------------+-------------+
+| branch_id | branch_name     | address     |
++-----------+-----------------+-------------+
+|         1 | Central Library | Cityville   |
+|         2 | North Branch    | Townville   |
+|         3 | East Branch     | Villagetown |
+|         4 | South Branch    | Metrocity   |
+|         5 | West Branch     | Suburbia    |
++-----------+-----------------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into card(card_no)values(10),(20),(40),(50),(30);
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from card;
++---------+
+| card_no |
++---------+
+|      10 |
+|      20 |
+|      30 |
+|      40 |
+|      50 |
++---------+
+5 rows in set (0.00 sec)
+
+mysql> alter table book modify column pub_name varchar(40);
+
+mysql> insert into book(book_id,title,pub_name,pub_year)values(1,'Science','Disha Publishing House','1900'),(2,'Maths','Harshi Publishing House','1800'),(3,'Social','Jaico Publishing House','1700'),(4,'Political','Manya Publishing House','1600'),(5,'History','Medha Publishing House','1500');
+
+mysql> select * from book;
++---------+-----------+-------------------------+----------+
+| book_id | title     | pub_name                | pub_year |
++---------+-----------+-------------------------+----------+
+|       1 | Science   | Disha Publishing House  | 1900     |
+|       2 | Maths     | Harshi Publishing House | 1800     |
+|       3 | Social    | Jaico Publishing House  | 1700     |
+|       4 | Political | Manya Publishing House  | 1600     |
+|       5 | History   | Medha Publishing House  | 1500     |
++---------+-----------+-------------------------+----------+
+
+mysql> insert into book_author(book_id,author_name)values(1,'Newton'),(2,'Anand'),(3,'Nick'),(4,'Jhon'),(5,'Rosy');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from book_author;
++---------+-------------+
+| book_id | author_name |
++---------+-------------+
+|       1 | Newton      |
+|       2 | Anand       |
+|       3 | Nick        |
+|       4 | Jhon        |
+|       5 | Rosy        |
++---------+-------------+
+
+mysql> insert into book_copies(book_id,branch_id,no_of_copies)values(1,1,100),(2,2,300),(3,3,200),(4,4,500),(5,5,400);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from book_copies;
++---------+-----------+--------------+
+| book_id | branch_id | no_of_copies |
++---------+-----------+--------------+
+|       1 |         1 |          100 |
+|       2 |         2 |          300 |
+|       3 |         3 |          200 |
+|       4 |         4 |          500 |
+|       5 |         5 |          400 |
++---------+-----------+--------------+
+
+mysql> insert into book_lending(book_id,branch_id,card_no,date_out,due_date)values(1,1,10,'2025-02-01','2025-03-01'),(2,2,20,'2025-03-02','2025-04-02'),(3,3,30,'2025-04-03','
+2025-04-30'),(4,4,40,'2025-03-15','2025-04-01'),(5,5,50,'2025-04-15','2025-04-25');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from book_lending;
++---------+-----------+---------+------------+------------+
+| book_id | branch_id | card_no | date_out   | due_date   |
++---------+-----------+---------+------------+------------+
+|       1 |         1 |      10 | 2025-02-01 | 2025-03-01 |
+|       2 |         2 |      20 | 2025-03-02 | 2025-04-02 |
+|       3 |         3 |      30 | 2025-04-03 | 2025-04-30 |
+|       4 |         4 |      40 | 2025-03-15 | 2025-04-01 |
+|       5 |         5 |      50 | 2025-04-15 | 2025-04-25 |
++---------+-----------+---------+------------+------------+
+
+mysql>   insert into book_lending(book_id,branch_id,card_no,date_out,due_date)values(1,2,40,'2025-01-07','2025-03-01'),(3,1,10,'2025-06-15','2025-07-10'),(5,4,30,'2025-05-19'
+,'2025-06-10');
+
+mysql> insert into book_lending(book_id,branch_id,card_no,date_out,due_date)values(1,2,10,'2025-01-08','2025-02-08'),(1,2,30,'2025-02-08','2025-03-08');
+
+mysql>  select * from book_lending;
++---------+-----------+---------+------------+------------+
+| book_id | branch_id | card_no | date_out   | due_date   |
++---------+-----------+---------+------------+------------+
+|       1 |         1 |      10 | 2025-02-01 | 2025-03-01 |
+|       1 |         2 |      10 | 2025-01-08 | 2025-02-08 |
+|       1 |         2 |      30 | 2025-02-08 | 2025-03-08 |
+|       1 |         2 |      40 | 2025-01-07 | 2025-03-01 |
+|       2 |         2 |      20 | 2025-03-02 | 2025-04-02 |
+|       3 |         1 |      10 | 2025-06-15 | 2025-07-10 |
+|       3 |         3 |      30 | 2025-04-03 | 2025-04-30 |
+|       4 |         4 |      40 | 2025-03-15 | 2025-04-01 |
+|       5 |         4 |      30 | 2025-05-19 | 2025-06-10 |
+|       5 |         5 |      50 | 2025-04-15 | 2025-04-25 |
++---------+-----------+---------+------------+------------+
+
+mysql> select b.book_id,b.title,b.pub_name,a.author_name,c.no_of_copies,c.branch_id from book b,book_author a,book_copies c where b.book_id=a.book_id and a.book_id=c.book_id;
+
++---------+-----------+-------------------------+-------------+--------------+-----------+
+| book_id | title     | pub_name                | author_name | no_of_copies | branch_id |
++---------+-----------+-------------------------+-------------+--------------+-----------+
+|       1 | Science   | Disha Publishing House  | Newton      |          100 |         1 |
+|       2 | Maths     | Harshi Publishing House | Anand       |          300 |         2 |
+|       3 | Social    | Jaico Publishing House  | Nick        |          200 |         3 |
+|       4 | Political | Manya Publishing House  | Jhon        |          500 |         4 |
+|       5 | History   | Medha Publishing House  | Rosy        |          400 |         5 |
++---------+-----------+-------------------------+-------------+--------------+-----------+
+
+mysql> select card_no from book_lending l where date_out between '2025-01-01' and '2025-06-30' group by card_no having count(*)>=3;
++---------+
+| card_no |
++---------+
+|      10 |
+|      30 |
++---------+
+
+
+
